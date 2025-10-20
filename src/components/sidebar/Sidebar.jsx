@@ -1,4 +1,13 @@
-import { BadgeDollarSign, ChartLine, LayoutDashboard } from "lucide-react";
+import {
+  BadgeDollarSign,
+  Bell,
+  ChartLine,
+  ClipboardMinus,
+  LayoutDashboard,
+  ShoppingCart,
+  Users,
+  Warehouse,
+} from "lucide-react";
 import logo from "../../assets/logo.png";
 import { Link } from "react-router";
 export function Sidebar() {
@@ -10,33 +19,69 @@ export function Sidebar() {
     {
       icon: <ChartLine />,
       title: "Analytics",
+      path: "analytics"
     },
     {
       icon: <BadgeDollarSign />,
       title: "Sales",
     },
   ];
+
+  const managementList = [
+    {
+      icon: <ShoppingCart />,
+      title: "Products",
+    },
+    {
+      icon: <Users />,
+      title: "Customer",
+    },
+    {
+      icon: <Warehouse />,
+      title: "Warehouse",
+    },
+    {
+      icon: <ClipboardMinus />,
+      title: "Reports",
+    },
+  ];
   return (
     <>
-      <div className="bg-[#43548f] pt-5 pl-10">
-        <div>
+      <div className="bg-[#43548f] pt-5 h-screen">
+        <div className="pl-5">
           <a href="#">
             <img src={logo} alt="logo" />
           </a>
         </div>
         <div className="mt-5">
-          <h1 className="font-poppins text-white font-medium">Menu</h1>
-          <div className="flex flex-col gap-y-4 mt-5">
+          <h1 className="font-poppins text-white font-medium pl-5">Menu</h1>
+          <div className="flex flex-col gap-y-2 mt-5 pl-3">
             {menuList.map((item, i) => (
-              <div key={i}>
-                <Link className="flex items-center gap-x-3 text-[#ffffff9d] font-poppins">
+              <div key={i} className="">
+                <Link to={item.path} className="flex items-center gap-x-3 text-[#ffffff9d] font-poppins hover:text-white hover:bg-[#ffffff10] py-2 px-2 rounded-[6px] mr-3 duration-200">
                   {item.icon} <span>{item.title}</span>
                 </Link>
               </div>
             ))}
           </div>
         </div>
-        <div></div>
+        <div className="mt-5">
+          <h1 className="font-poppins text-white font-medium pl-5">
+            Management
+          </h1>
+          <div className="flex flex-col gap-y-2 mt-5 pl-3">
+            {managementList.map((item, i) => (
+              <div key={i} className="">
+                <Link className="flex items-center gap-x-3 text-[#ffffff9d] font-poppins hover:text-white hover:bg-[#ffffff10] py-2 px-2 rounded-[6px] mr-3 duration-200">
+                  {item.icon} <span>{item.title}</span>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mt-5 pl-3">
+          <Link className="font-poppins text-white font-medium flex gap-x-3 hover:text-white hover:bg-[#ffffff10] py-2 px-2 rounded-[6px] mr-3 duration-200"> <Bell />Notifications</Link>
+        </div>
       </div>
     </>
   );
