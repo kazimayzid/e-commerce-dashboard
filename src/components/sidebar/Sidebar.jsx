@@ -24,6 +24,7 @@ export function Sidebar() {
     {
       icon: <BadgeDollarSign />,
       title: "Sales",
+      path: "sales"
     },
   ];
 
