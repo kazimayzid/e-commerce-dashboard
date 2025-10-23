@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+
 import React from "react";
 import {
   Chart as ChartJS,
@@ -74,7 +74,7 @@ export default function Analytics() {
     <div className="p-4 bg-white rounded-2xl shadow-md">
       <Bar options={options} data={data} />
 
-       <Button>Click me</Button>
+       
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Rootlayout from "./components/rootlayout/Rootlayout";
 import { Dashboard } from "./components/dashboard/Dashboard";
 import Analytics from "./components/analytics/Analytics";
 import Sales from "./components/sales/Sales";
+import Category from "./components/category/Category";
 
 
 const router = createBrowserRouter([
@@ -14,7 +15,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, Component: Dashboard },
       { path: "analytics", Component: Analytics},
-      { path: "/sales", Component: Sales}
+      { path: "/sales", Component: Sales},
+      { path: "category", Component: Category},
       
     ],
   },
