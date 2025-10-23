@@ -55,7 +55,7 @@ export function Sidebar() {
   ];
   return (
     <>
-      <div className="bg-[#43548f] pt-5 h-screen">
+      <div className="bg-[#327594] pt-5 h-screen">
         <div className="pl-5">
           <a href="#">
             <img src={logo} alt="logo" />
