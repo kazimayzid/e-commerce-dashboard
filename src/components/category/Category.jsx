@@ -16,7 +16,26 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import { FilePenLine, Search, Trash2 } from "lucide-react";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import React, { useEffect, useState } from "react";
+import { data } from "react-router";
 export default function Category() {
+  //  Category creating ============================================
+
   const {
     register,
     handleSubmit,
@@ -28,8 +47,6 @@ export default function Category() {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
-
       await axios.post(
         "http://localhost:3000/api/v1/category/createcategory",
         data
@@ -37,15 +54,77 @@ export default function Category() {
       toast("Category created!", {
         description: "Successfully saved to database",
         style: {
-          background: "#327594", 
-          color: "#ffffff", 
-          borderRadius: "8px", 
-          padding: "12px 16px", 
+          background: "#327594",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
         },
       });
       reset();
+      fatchData();
     } catch (error) {
-      toast.error("Failed to create category. Please try again.");
+      toast("Category not created!", {
+        description: "Failed to create Category",
+        style: {
+          background: "#f62d47",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
+      console.log(error);
+    }
+  };
+
+  // Data fatching from database ======================================
+
+  const [categoryList, setCategoryList] = useState([]);
+
+  const fatchData = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:3000/api/v1/category/getcategory"
+      );
+      setCategoryList(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fatchData();
+  }, []);
+  console.log(categoryList);
+
+  const [position, setPosition] = React.useState("bottom");
+
+  // Delete handle ======================================================
+
+  const deleteHandler = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:3000/api/v1/category/deletecategory/${id}`
+      );
+      toast("Category deleted!", {
+        description: "Successfully removed from database",
+        style: {
+          background: "#f62d47",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
+      fatchData();
+    } catch (error) {
+      toast("Failed to delete!", {
+        description: "Something went wrong while deleting.",
+        style: {
+          background: "#ff9800",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
       console.log(error);
     }
   };
@@ -64,7 +143,7 @@ export default function Category() {
           <FieldSet className="mt-5">
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="CategoryName" className="font-poppins">
+                <FieldLabel htmlFor="name" className="font-poppins">
                   Category Name
                 </FieldLabel>
                 <Input
@@ -75,9 +154,9 @@ export default function Category() {
                     required: "Name is required",
                   })}
                 />
-                {errors.CategoryName && (
+                {errors.name && (
                   <p className="text-red-400 text-[12px]">
-                    {errors.CategoryName.message}
+                    {errors.name.message}
                   </p>
                 )}
               </Field>
@@ -106,7 +185,83 @@ export default function Category() {
             </Button>
           </FieldSet>
         </form>
-        <div></div>
+        <div className="mt-20">
+          <div className="overflow-x-auto p-4">
+            <h1 className="font-poppins font-bold text-2xl border-[.5px] inline-block px-5 py-0.5 rounded-[10px] text-[#327594] mb-5">
+              Category List
+            </h1>
+            <div className="my-1 ml-30 inline-block">
+              <InputGroup>
+                <InputGroupInput placeholder="Search..." />
+                <InputGroupAddon>
+                  <Search />
+                </InputGroupAddon>
+                <InputGroupAddon align="inline-end">12 results</InputGroupAddon>
+              </InputGroup>
+            </div>
+            <table className="min-w-full border border-gray-200 rounded-lg">
+              <thead className="bg-gray-100 text-gray-700">
+                <tr>
+                  <th className="py-3 px-4 text-left">Sr.</th>
+                  <th className="py-3 px-4 text-left">CategoryName</th>
+                  <th className="py-3 px-4 text-left">Description</th>
+                  <th className="py-3 px-4 text-left">SubCategory</th>
+                  <th className="py-3 px-4 text-left">Date</th>
+                  <th className="py-3 px-4 text-left">Product ID</th>
+                  <th className="py-3 px-4 text-left">Action</th>
+                </tr>
+              </thead>
+
+              <tbody className="text-gray-600">
+                {categoryList.map((item, index) => (
+                  <tr
+                    key={item._id}
+                    className="border-t hover:bg-gray-50 transition duration-150 "
+                  >
+                    <td className="py-2 px-4">{index + 1}</td>
+                    <td className="py-2 px-4">{item.name}</td>
+                    <td className="py-2 px-4">{item.description}</td>
+                    <td className="py-2 px-4 font-semibold">
+                      {item.subCategory.map((data) => (
+                        <DropdownMenu key={data._id}>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline">SubCategories</Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-56">
+                            <DropdownMenuRadioGroup
+                              value={position}
+                              onValueChange={setPosition}
+                            >
+                              <DropdownMenuRadioItem value={data._id}>
+                                {data._id}
+                              </DropdownMenuRadioItem>
+                            </DropdownMenuRadioGroup>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ))}
+                    </td>
+
+                    <td className="py-2 px-4">{item.Date}</td>
+                    <td className="py-2 px-4">{item._id}</td>
+                    <td className="px-4 ">
+                      <div className="flex gap-x-5 items-center ">
+                        <FilePenLine
+                          size={30}
+                          className="text-green-500 cursor-pointer border-[.5px] rounded-[6px] p-1 hover:bg-green-500 hover:text-white duration-300"
+                        />
+                        <Trash2
+                          onClick={() => deleteHandler(item._id)}
+                          size={30}
+                          className="text-red-500 cursor-pointer border-[.5px] rounded-[6px] p-1 hover:bg-red-500 hover:text-white duration-300"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </>
   );
