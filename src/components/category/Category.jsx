@@ -31,8 +31,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import React, { useEffect, useState } from "react";
-import { data } from "react-router";
 export default function Category() {
   //  Category creating ============================================
 
@@ -129,6 +129,18 @@ export default function Category() {
     }
   };
 
+  // updateHandler section =====================================
+
+  const [updateDisplay, setUpdateDisplay] = useState(false);
+
+  const updateHandler = (id) => {
+    setUpdateDisplay(true);
+  };
+
+  const popUpDisplayHandler = () => {
+    setUpdateDisplay(false);
+  };
+
   return (
     <>
       <Toaster position="top-center" richColors />
@@ -207,7 +219,7 @@ export default function Category() {
                   <th className="py-3 px-4 text-left">Description</th>
                   <th className="py-3 px-4 text-left">SubCategory</th>
                   <th className="py-3 px-4 text-left">Date</th>
-                  <th className="py-3 px-4 text-left">Product ID</th>
+                  <th className="py-3 px-4 text-left">Category ID</th>
                   <th className="py-3 px-4 text-left">Action</th>
                 </tr>
               </thead>
@@ -246,9 +258,11 @@ export default function Category() {
                     <td className="px-4 ">
                       <div className="flex gap-x-5 items-center ">
                         <FilePenLine
+                          onClick={() => updateHandler(item._id)}
                           size={30}
                           className="text-green-500 cursor-pointer border-[.5px] rounded-[6px] p-1 hover:bg-green-500 hover:text-white duration-300"
                         />
+
                         <Trash2
                           onClick={() => deleteHandler(item._id)}
                           size={30}
@@ -263,6 +277,80 @@ export default function Category() {
           </div>
         </div>
       </div>
+
+      {updateDisplay && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-lg bg-opacity-50 z-50">
+          <div className="bg-white rounded-xl shadow-xl p-8 w-[400px] relative">
+            <h2 className="text-xl font-semibold text-[#327594] mb-4 font-poppins">
+              Update Category
+            </h2>
+            <form
+              className="border-[.5px] p-5 shadow-lg rounded-xl bg-white "
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <FieldSet className="mt-5">
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="name" className="font-poppins">
+                      Category Name
+                    </FieldLabel>
+                    <Input
+                      id="name"
+                      autoComplete="off"
+                      placeholder="Evil Rabbit"
+                      {...register("name", {
+                        required: "Name is required",
+                      })}
+                    />
+                    {errors.name && (
+                      <p className="text-red-400 text-[12px]">
+                        {errors.name.message}
+                      </p>
+                    )}
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="description" className="font-poppins">
+                      Category Description
+                    </FieldLabel>
+                    <Input
+                      id="description"
+                      autoComplete="off"
+                      placeholder="Evil Rabbit"
+                      className="font-poppins "
+                      {...register("description", {
+                        required: "Description is required",
+                      })}
+                    />
+                    {errors.description && (
+                      <p className="text-red-400 text-[12px]">
+                        {errors.description.message}
+                      </p>
+                    )}
+                  </Field>
+                </FieldGroup>
+                <div>
+                  <div className="flex justify-end gap-3 mt-6">
+                    <Button
+                      onClick={popUpDisplayHandler}
+                      type="button"
+                      variant="outline"
+                      className="bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="bg-[#327594] text-white hover:bg-[#285e77] cursor-pointer"
+                    >
+                      Update
+                    </Button>
+                  </div>
+                </div>
+              </FieldSet>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }
