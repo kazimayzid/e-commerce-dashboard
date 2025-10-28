@@ -3,6 +3,7 @@ import {
   Bell,
   ChartLine,
   ClipboardMinus,
+  CornerDownRight,
   LayoutDashboard,
   LayoutList,
   ShoppingCart,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import logo from "../../assets/logo.png";
 import { Link } from "react-router";
+import SubCategory from "../subCategory/SubCategory";
 
 export function Sidebar() {
   const menuList = [
@@ -35,6 +37,11 @@ export function Sidebar() {
       icon: <LayoutList />,
       title: "Category",
       path: "category",
+    },
+    {
+      icon: <CornerDownRight />,
+      title: "SubCategory",
+      path: "subcategory",
     },
     {
       icon: <ShoppingCart />,

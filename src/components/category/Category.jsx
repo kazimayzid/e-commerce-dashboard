@@ -40,7 +40,7 @@ export default function Category() {
     register,
     handleSubmit,
     reset,
-    watch,
+    setValue,
     formState: { errors },
   } = useForm();
   //  console.log(form, "data");
@@ -131,14 +131,59 @@ export default function Category() {
 
   // updateHandler section =====================================
 
+  const {
+    register: updateRegister,
+    handleSubmit: handleUpdateSubmit,
+    reset: updateReset,
+    setValue: updateSetValue,
+    formState: { errors: updateErrors },
+  } = useForm();
+
   const [updateDisplay, setUpdateDisplay] = useState(false);
 
-  const updateHandler = (id) => {
+  const updateHandler = (category) => {
     setUpdateDisplay(true);
+    updateSetValue("name", category.name);
+    updateSetValue("description", category.description);
+    updateSetValue("_id", category._id);
   };
 
   const popUpDisplayHandler = () => {
     setUpdateDisplay(false);
+  };
+
+  const onUpdateSubmit = async (data) => {
+    try {
+      await axios.patch(
+        `http://localhost:3000/api/v1/category/updatecategory/${data._id}`,
+        { name: data.name, description: data.description }
+      );
+
+      toast("Category updated!", {
+        description: "Successfully updated in database",
+        style: {
+          background: "#327594",
+          color: "#fff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
+
+      setUpdateDisplay(false);
+      updateReset();
+      fatchData(); // reload list
+    } catch (error) {
+      toast("Update failed!", {
+        description: "Something went wrong",
+        style: {
+          background: "#f62d47",
+          color: "#fff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
+      console.log(error);
+    }
   };
 
   return (
@@ -258,7 +303,7 @@ export default function Category() {
                     <td className="px-4 ">
                       <div className="flex gap-x-5 items-center ">
                         <FilePenLine
-                          onClick={() => updateHandler(item._id)}
+                          onClick={() => updateHandler(item)}
                           size={30}
                           className="text-green-500 cursor-pointer border-[.5px] rounded-[6px] p-1 hover:bg-green-500 hover:text-white duration-300"
                         />
@@ -285,8 +330,8 @@ export default function Category() {
               Update Category
             </h2>
             <form
-              className="border-[.5px] p-5 shadow-lg rounded-xl bg-white "
-              onSubmit={handleSubmit(onSubmit)}
+              className="border-[.5px] p-5 shadow-lg rounded-xl bg-white"
+              onSubmit={handleUpdateSubmit(onUpdateSubmit)}
             >
               <FieldSet className="mt-5">
                 <FieldGroup>
@@ -297,14 +342,11 @@ export default function Category() {
                     <Input
                       id="name"
                       autoComplete="off"
-                      placeholder="Evil Rabbit"
-                      {...register("name", {
-                        required: "Name is required",
-                      })}
+                      {...updateRegister("name", { required: "Name is required" })}
                     />
-                    {errors.name && (
+                    {updateErrors.name && (
                       <p className="text-red-400 text-[12px]">
-                        {errors.name.message}
+                        {updateErrors.name.message}
                       </p>
                     )}
                   </Field>
@@ -315,36 +357,33 @@ export default function Category() {
                     <Input
                       id="description"
                       autoComplete="off"
-                      placeholder="Evil Rabbit"
-                      className="font-poppins "
-                      {...register("description", {
+                      {...updateRegister("description", {
                         required: "Description is required",
                       })}
                     />
-                    {errors.description && (
+                    {updateErrors.description && (
                       <p className="text-red-400 text-[12px]">
-                        {errors.description.message}
+                        {updateErrors.description.message}
                       </p>
                     )}
                   </Field>
+                  <input type="hidden" {...register("_id")} />
                 </FieldGroup>
-                <div>
-                  <div className="flex justify-end gap-3 mt-6">
-                    <Button
-                      onClick={popUpDisplayHandler}
-                      type="button"
-                      variant="outline"
-                      className="bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="bg-[#327594] text-white hover:bg-[#285e77] cursor-pointer"
-                    >
-                      Update
-                    </Button>
-                  </div>
+                <div className="flex justify-end gap-3 mt-6">
+                  <Button
+                    onClick={popUpDisplayHandler}
+                    type="button"
+                    variant="outline"
+                    className="bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-[#327594] text-white hover:bg-[#285e77]"
+                  >
+                    Update
+                  </Button>
                 </div>
               </FieldSet>
             </form>

@@ -6,18 +6,18 @@ import { Dashboard } from "./components/dashboard/Dashboard";
 import Analytics from "./components/analytics/Analytics";
 import Sales from "./components/sales/Sales";
 import Category from "./components/category/Category";
-
+import SubCategory from "./components/subCategory/SubCategory";
 
 const router = createBrowserRouter([
-   {
+  {
     path: "/",
-    element: < Rootlayout/>,
+    element: <Rootlayout />,
     children: [
       { index: true, Component: Dashboard },
-      { path: "analytics", Component: Analytics},
-      { path: "/sales", Component: Sales},
-      { path: "category", Component: Category},
-      
+      { path: "analytics", Component: Analytics },
+      { path: "/sales", Component: Sales },
+      { path: "category", Component: Category },
+      { path: "subcategory", Component: SubCategory },
     ],
   },
 ]);
