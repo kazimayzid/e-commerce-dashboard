@@ -206,7 +206,7 @@ export default function Category() {
                 <Input
                   id="name"
                   autoComplete="off"
-                  placeholder="Evil Rabbit"
+                  placeholder="Category Name"
                   {...register("name", {
                     required: "Name is required",
                   })}
@@ -224,7 +224,7 @@ export default function Category() {
                 <Input
                   id="description"
                   autoComplete="off"
-                  placeholder="Evil Rabbit"
+                  placeholder="Category Description"
                   className="font-poppins "
                   {...register("description", {
                     required: "Description is required",
