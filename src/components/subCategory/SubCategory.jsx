@@ -33,9 +33,37 @@ export default function SubCategory() {
     formState: { errors },
   } = useForm();
 
+  //    SubCategory Creating sections =======================
+
   const onSubmit = async (data) => {
     try {
-      console.log(data);
+      if (!data.category) {
+        toast("Category is Required!", {
+          description: "Plz select a Category",
+          style: {
+            background: "#f62d47",
+            color: "#ffffff",
+            borderRadius: "8px",
+            padding: "12px 16px",
+          },
+        });
+        return;
+      }
+
+      await axios.post(
+        "http://localhost:3000/api/v1/subcategory/createsubcategory",
+        data
+      );
+
+      toast("Subcategory created!", {
+        description: "Successfully saved to database",
+        style: {
+          background: "#327594",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
       reset();
     } catch (error) {
       toast("Category not created!", {
