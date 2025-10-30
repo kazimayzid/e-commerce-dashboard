@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { toast, Toaster } from "sonner";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import GetAllCategories from "../getAllSubCategory/GetAllSubCategories";
 
 export default function SubCategory() {
   const {
@@ -188,6 +189,9 @@ export default function SubCategory() {
             </Button>
           </FieldSet>
         </form>
+      </div>
+      <div className="mt-8">
+        <GetAllCategories/>
       </div>
     </>
   );

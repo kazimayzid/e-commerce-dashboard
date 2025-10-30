@@ -31,7 +31,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import React, { useEffect, useState } from "react";
 export default function Category() {
   //  Category creating ============================================
@@ -96,7 +102,7 @@ export default function Category() {
   }, []);
   console.log(categoryList);
 
-  const [position, setPosition] = React.useState("bottom");
+
 
   // Delete handle ======================================================
 
@@ -279,23 +285,20 @@ export default function Category() {
                     <td className="py-2 px-4">{item.name}</td>
                     <td className="py-2 px-4">{item.description}</td>
                     <td className="py-2 px-4 font-semibold">
-                      {item.subCategory.map((data) => (
-                        <DropdownMenu key={data._id}>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline">SubCategories</Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-56">
-                            <DropdownMenuRadioGroup
-                              value={position}
-                              onValueChange={setPosition}
-                            >
-                              <DropdownMenuRadioItem value={data._id}>
-                                {data._id}
-                              </DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      ))}
+                      <Select
+                        
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Categories" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {item.subCategory.map((data) => (
+                            <SelectItem value="SubCategories" key={data._id}>
+                              {data.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </td>
 
                     <td className="py-2 px-4">{item.Date}</td>
@@ -342,7 +345,9 @@ export default function Category() {
                     <Input
                       id="name"
                       autoComplete="off"
-                      {...updateRegister("name", { required: "Name is required" })}
+                      {...updateRegister("name", {
+                        required: "Name is required",
+                      })}
                     />
                     {updateErrors.name && (
                       <p className="text-red-400 text-[12px]">
