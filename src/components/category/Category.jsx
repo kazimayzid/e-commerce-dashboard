@@ -177,7 +177,7 @@ export default function Category() {
 
       setUpdateDisplay(false);
       updateReset();
-      fatchData(); // reload list
+      fatchData();
     } catch (error) {
       toast("Update failed!", {
         description: "Something went wrong",
@@ -289,11 +289,11 @@ export default function Category() {
                         
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Categories" />
+                          <SelectValue placeholder="Subcategories" />
                         </SelectTrigger>
                         <SelectContent>
                           {item.subCategory.map((data) => (
-                            <SelectItem value="SubCategories" key={data._id}>
+                            <SelectItem value={data._id} key={data._id}>
                               {data.name}
                             </SelectItem>
                           ))}
