@@ -26,6 +26,18 @@ import { useEffect, useState } from "react";
 import GetAllCategories from "../getAllSubCategory/GetAllSubCategories";
 
 export default function SubCategory() {
+
+    // global state ==================
+  const [refresh, setRefresh] = useState(false);
+
+
+
+
+
+//  auto Refresh =======================
+
+const handleRefresh = () => setRefresh(!refresh);
+
   const {
     register,
     handleSubmit,
@@ -55,6 +67,7 @@ export default function SubCategory() {
         "http://localhost:3000/api/v1/subcategory/createsubcategory",
         data
       );
+      handleRefresh()
 
       toast("Subcategory created!", {
         description: "Successfully saved to database",
@@ -191,7 +204,7 @@ export default function SubCategory() {
         </form>
       </div>
       <div className="mt-8">
-        <GetAllCategories/>
+        <GetAllCategories refresh={refresh}/>
       </div>
     </>
   );

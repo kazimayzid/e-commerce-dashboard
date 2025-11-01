@@ -29,7 +29,7 @@ import { FilePenLine, Search, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
-export default function GetAllCategories() {
+export default function GetAllCategories({ refresh }) {
   //   SubCategories data fatching sections =============================
   const [subCategoriesData, setSubCategoriesData] = useState([]);
   const subCategoriesFatching = async () => {
@@ -54,7 +54,8 @@ export default function GetAllCategories() {
 
   useEffect(() => {
     subCategoriesFatching();
-  }, []);
+  }, [refresh]);
+  console.log(subCategoriesData, "sub");
 
   //   Fatching Category from DB========================
   const [categoriesData, setCategoriesData] = useState([]);
@@ -90,6 +91,7 @@ export default function GetAllCategories() {
       await axios.delete(
         `http://localhost:3000/api/v1/subcategory/deletesubcategory/${id}`
       );
+      subCategoriesFatching();
       toast("Category deleted!", {
         description: "Successfully removed from database",
         style: {
@@ -99,7 +101,6 @@ export default function GetAllCategories() {
           padding: "12px 16px",
         },
       });
-      subCategoriesFatching();
     } catch (error) {
       toast("Failed to delete!", {
         description: "Something went wrong while deleting.",
@@ -115,14 +116,14 @@ export default function GetAllCategories() {
   };
 
   // updateHandler section =====================================
-const [currentCategoryName, setCurrentCategoryName] = useState("");
+  const [currentCategoryName, setCurrentCategoryName] = useState("");
   const updateHandler = (item) => {
     setUpdateDisplay(true);
     setValue("name", item.name);
     setValue("description", item.description);
-    setValue("category", item.category._id); 
-  setCurrentCategoryName(item.category.name);
-    
+    setValue("category", item.category._id);
+    setValue("_id", item._id);
+    setCurrentCategoryName(item.category.name);
   };
 
   const [updateDisplay, setUpdateDisplay] = useState(false);
@@ -131,15 +132,19 @@ const [currentCategoryName, setCurrentCategoryName] = useState("");
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm();
 
   const onSubmit = async (data) => {
     try {
+      console.log(data);
+
       await axios.patch(
         `http://localhost:3000/api/v1/subcategory/updatesubcategory/${data._id}`,
-        { name: data.name, description: data.description }
+        data
       );
+      subCategoriesFatching();
       toast("Category updated!", {
         description: "Successfully updated in database",
         style: {
@@ -152,7 +157,6 @@ const [currentCategoryName, setCurrentCategoryName] = useState("");
 
       setUpdateDisplay(false);
       reset();
-      subCategoriesFatching();
     } catch (error) {
       toast("Update failed!", {
         description: "Something went wrong",
@@ -285,15 +289,18 @@ const [currentCategoryName, setCurrentCategoryName] = useState("");
                   </Field>
                   <input type="hidden" {...register("_id")} />
                   <h1 className="font-poppins text-[14px] font-medium">
-                Select Category
-              </h1>
+                    Select Category
+                  </h1>
                   <Select
+                    value={selectedCategory}
                     onValueChange={(value) =>
                       setValue("category", value, { shouldValidate: true })
                     }
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder={currentCategoryName || "Select Category"} />
+                      <SelectValue
+                        placeholder={currentCategoryName || "Select Category"}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {categoriesData.map((data) => (

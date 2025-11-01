@@ -57,6 +57,7 @@ export default function Category() {
         "http://localhost:3000/api/v1/category/createcategory",
         data
       );
+      fatchData();
       toast("Category created!", {
         description: "Successfully saved to database",
         style: {
@@ -67,7 +68,6 @@ export default function Category() {
         },
       });
       reset();
-      fatchData();
     } catch (error) {
       toast("Category not created!", {
         description: "Failed to create Category",
@@ -99,7 +99,7 @@ export default function Category() {
 
   useEffect(() => {
     fatchData();
-  }, []);
+  }, [categoryList]);
   console.log(categoryList);
 
 
