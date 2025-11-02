@@ -1,15 +1,4 @@
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-  FieldTitle,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -22,15 +11,6 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -46,7 +26,6 @@ export default function Category() {
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors },
   } = useForm();
   //  console.log(form, "data");
@@ -57,7 +36,6 @@ export default function Category() {
         "http://localhost:3000/api/v1/category/createcategory",
         data
       );
-      fatchData();
       toast("Category created!", {
         description: "Successfully saved to database",
         style: {
@@ -68,9 +46,13 @@ export default function Category() {
         },
       });
       reset();
+      await fatchData();
     } catch (error) {
-      toast("Category not created!", {
-        description: "Failed to create Category",
+      const errorMessage =
+        error.response?.data?.messege || "Failed to create Category";
+
+      toast(errorMessage, {
+        description: "Check your input or try again",
         style: {
           background: "#f62d47",
           color: "#ffffff",
@@ -99,10 +81,7 @@ export default function Category() {
 
   useEffect(() => {
     fatchData();
-  }, [categoryList]);
-  console.log(categoryList);
-
-
+  }, []);
 
   // Delete handle ======================================================
 
@@ -120,7 +99,7 @@ export default function Category() {
           padding: "12px 16px",
         },
       });
-      fatchData();
+      await fatchData();
     } catch (error) {
       toast("Failed to delete!", {
         description: "Something went wrong while deleting.",
@@ -177,7 +156,7 @@ export default function Category() {
 
       setUpdateDisplay(false);
       updateReset();
-      fatchData();
+      await fatchData();
     } catch (error) {
       toast("Update failed!", {
         description: "Something went wrong",
@@ -285,16 +264,14 @@ export default function Category() {
                     <td className="py-2 px-4">{item.name}</td>
                     <td className="py-2 px-4">{item.description}</td>
                     <td className="py-2 px-4 font-semibold">
-                      <Select
-                        
-                      >
+                      <Select>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Subcategories" />
                         </SelectTrigger>
                         <SelectContent>
-                          {item.subCategory.map((data) => (
-                            <SelectItem value={data._id} key={data._id}>
-                              {data.name}
+                          {item.subCategory?.map((sub) => (
+                            <SelectItem value={sub._id} key={sub._id}>
+                              {sub.name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -372,7 +349,7 @@ export default function Category() {
                       </p>
                     )}
                   </Field>
-                  <input type="hidden" {...register("_id")} />
+                  <input type="hidden" {...updateRegister("_id")} />
                 </FieldGroup>
                 <div className="flex justify-end gap-3 mt-6">
                   <Button

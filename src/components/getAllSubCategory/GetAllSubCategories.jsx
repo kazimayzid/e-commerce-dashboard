@@ -83,6 +83,7 @@ export default function GetAllCategories({ refresh }) {
   useEffect(() => {
     CategoryData();
   }, []);
+console.log(categoriesData, "catData");
 
   // Delete handle ======================================================
 
@@ -116,6 +117,7 @@ export default function GetAllCategories({ refresh }) {
   };
 
   // updateHandler section =====================================
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [currentCategoryName, setCurrentCategoryName] = useState("");
   const updateHandler = (item) => {
     setUpdateDisplay(true);
@@ -124,6 +126,7 @@ export default function GetAllCategories({ refresh }) {
     setValue("category", item.category._id);
     setValue("_id", item._id);
     setCurrentCategoryName(item.category.name);
+    setSelectedCategory(item.category._id);
   };
 
   const [updateDisplay, setUpdateDisplay] = useState(false);
@@ -144,6 +147,7 @@ export default function GetAllCategories({ refresh }) {
         `http://localhost:3000/api/v1/subcategory/updatesubcategory/${data._id}`,
         data
       );
+      CategoryData();
       subCategoriesFatching();
       toast("Category updated!", {
         description: "Successfully updated in database",
@@ -172,6 +176,7 @@ export default function GetAllCategories({ refresh }) {
   };
   const popUpDisplayHandler = () => {
     setUpdateDisplay(false);
+    setSelectedCategory("");
   };
 
   return (

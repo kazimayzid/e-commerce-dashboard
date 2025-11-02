@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Controller } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -26,27 +27,21 @@ import { useEffect, useState } from "react";
 import GetAllCategories from "../getAllSubCategory/GetAllSubCategories";
 
 export default function SubCategory() {
-
-    // global state ==================
+  // global state ==================
   const [refresh, setRefresh] = useState(false);
 
+  //  auto Refresh =======================
 
+  const handleRefresh = () => setRefresh(!refresh);
 
-
-
-//  auto Refresh =======================
-
-const handleRefresh = () => setRefresh(!refresh);
-
+  //    SubCategory Creating sections =======================
   const {
     register,
     handleSubmit,
     reset,
-    setValue,
+    control,
     formState: { errors },
   } = useForm();
-
-  //    SubCategory Creating sections =======================
 
   const onSubmit = async (data) => {
     try {
@@ -67,8 +62,12 @@ const handleRefresh = () => setRefresh(!refresh);
         "http://localhost:3000/api/v1/subcategory/createsubcategory",
         data
       );
-      handleRefresh()
-
+      handleRefresh();
+      reset({
+        name: "",
+        description: "",
+        category: "",
+      });
       toast("Subcategory created!", {
         description: "Successfully saved to database",
         style: {
@@ -78,7 +77,6 @@ const handleRefresh = () => setRefresh(!refresh);
           padding: "12px 16px",
         },
       });
-      reset();
     } catch (error) {
       toast("Category not created!", {
         description: "Failed to create Category",
@@ -101,6 +99,7 @@ const handleRefresh = () => setRefresh(!refresh);
       const { data } = await axios.get(
         "http://localhost:3000/api/v1/category/getcategory"
       );
+      reset();
       setCategoriesData(data.data);
     } catch (error) {
       toast("Failed", {
@@ -175,24 +174,27 @@ const handleRefresh = () => setRefresh(!refresh);
               <h1 className="font-poppins text-[14px] font-medium">
                 Select Category
               </h1>
-              <Select
-                onValueChange={(value) =>
-                  setValue("category", value, { shouldValidate: true })
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Categories" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoriesData.map((data) => (
-                    <SelectItem value={data._id} key={data._id}>
-                      {data.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Controller
+                name="category"
+                control={control}
+                rules={{ required: "Category is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categoriesData.map((data) => (
+                        <SelectItem key={data._id} value={data._id}>
+                          {data.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               {errors.category && (
-                <p className="text-red-400 text-[12px]">
+                <p className="text-red-400 text-[12px] mt-1">
                   {errors.category.message}
                 </p>
               )}
@@ -204,7 +206,7 @@ const handleRefresh = () => setRefresh(!refresh);
         </form>
       </div>
       <div className="mt-8">
-        <GetAllCategories refresh={refresh}/>
+        <GetAllCategories refresh={refresh} />
       </div>
     </>
   );
