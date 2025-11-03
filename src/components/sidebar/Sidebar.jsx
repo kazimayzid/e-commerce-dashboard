@@ -13,6 +13,7 @@ import {
 import logo from "../../assets/logo.png";
 import { Link } from "react-router";
 import SubCategory from "../subCategory/SubCategory";
+import path from "path";
 
 export function Sidebar() {
   const menuList = [
@@ -46,6 +47,7 @@ export function Sidebar() {
     {
       icon: <ShoppingCart />,
       title: "Products",
+      path: "product",
     },
     {
       icon: <Users />,

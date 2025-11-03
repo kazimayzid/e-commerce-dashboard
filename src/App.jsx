@@ -7,6 +7,7 @@ import Analytics from "./components/analytics/Analytics";
 import Sales from "./components/sales/Sales";
 import Category from "./components/category/Category";
 import SubCategory from "./components/subCategory/SubCategory";
+import Product from "./components/product/product";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "/sales", Component: Sales },
       { path: "category", Component: Category },
       { path: "subcategory", Component: SubCategory },
+      { path: "product", Component: Product },
     ],
   },
 ]);
