@@ -23,7 +23,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Controller } from "react-hook-form";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useEffect, useState } from "react";
 export default function Product() {
+  // Product create Section
   const {
     register,
     handleSubmit,
@@ -31,11 +34,37 @@ export default function Product() {
     control,
     formState: { errors },
   } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
+  // SubcategoryData fatching from database ======================================
+
+  const [subcategoryList, setSubcategoryList] = useState([]);
+
+  const fatchData = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:3000/api/v1/subcategory/getallsubcategory"
+      );
+      setSubcategoryList(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fatchData();
+  }, []);
   return (
     <>
       <Toaster position="top-center" richColors />
       <div>
-        <form className="border-[.5px] p-5 shadow-lg rounded-xl bg-white ">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="border-[.5px] p-5 shadow-lg rounded-xl bg-white "
+        >
           <h1 className="font-poppins font-bold text-2xl border-[.5px] inline px-5 py-0.5 rounded-[10px] text-[#327594]">
             Create Product
           </h1>
@@ -50,12 +79,15 @@ export default function Product() {
                     id="name"
                     autoComplete="off"
                     placeholder="Subcategory Name"
+                    {...register("name", {
+                      required: "Name is required",
+                    })}
                   />
-                  {/* {errors.name && (
-                  <p className="text-red-400 text-[12px]">
-                    {errors.name.message}
-                  </p>
-                )} */}
+                  {errors.name && (
+                    <p className="text-red-400 text-[12px]">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="description" className="font-poppins">
@@ -66,15 +98,15 @@ export default function Product() {
                     autoComplete="off"
                     placeholder="Description"
                     className="font-poppins "
-                    //   {...register("description", {
-                    //     required: "Description is required",
-                    //   })}
+                    {...register("description", {
+                      required: "Description is required",
+                    })}
                   />
-                  {/* {errors.description && (
-                  <p className="text-red-400 text-[12px]">
-                    {errors.description.message}
-                  </p>
-                )} */}
+                  {errors.description && (
+                    <p className="text-red-400 text-[12px]">
+                      {errors.description.message}
+                    </p>
+                  )}
                 </Field>
               </div>
               <div className="flex gap-x-10">
@@ -82,12 +114,19 @@ export default function Product() {
                   <FieldLabel htmlFor="price" className="font-poppins">
                     Price
                   </FieldLabel>
-                  <Input id="price" autoComplete="off" placeholder="Price" />
-                  {/* {errors.name && (
-                  <p className="text-red-400 text-[12px]">
-                    {errors.name.message}
-                  </p>
-                )} */}
+                  <Input
+                    id="price"
+                    autoComplete="off"
+                    placeholder="Price"
+                    {...register("price", {
+                      required: "Price is required",
+                    })}
+                  />
+                  {errors.name && (
+                    <p className="text-red-400 text-[12px]">
+                      {errors.price``.message}
+                    </p>
+                  )}
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="stock" className="font-poppins">
@@ -98,26 +137,26 @@ export default function Product() {
                     autoComplete="off"
                     placeholder="Stock"
                     className="font-poppins "
-                    //   {...register("description", {
-                    //     required: "Description is required",
-                    //   })}
+                    {...register("stock", {
+                      required: "Description is required",
+                    })}
                   />
-                  {/* {errors.description && (
-                  <p className="text-red-400 text-[12px]">
-                    {errors.description.message}
-                  </p>
-                )} */}
+                  {errors.description && (
+                    <p className="text-red-400 text-[12px]">
+                      {errors.description.message}
+                    </p>
+                  )}
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="rating" className="font-poppins">
                     Rating
                   </FieldLabel>
                   <Input id="rating" autoComplete="off" placeholder="Rating" />
-                  {/* {errors.name && (
-                  <p className="text-red-400 text-[12px]">
-                    {errors.name.message}
-                  </p>
-                )} */}
+                  {errors.name && (
+                    <p className="text-red-400 text-[12px]">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </Field>
               </div>
               <div className="flex gap-x-10">
@@ -134,11 +173,11 @@ export default function Product() {
                     //     required: "Description is required",
                     //   })}
                   />
-                  {/* {errors.description && (
-                  <p className="text-red-400 text-[12px]">
-                    {errors.description.message}
-                  </p>
-                )} */}
+                  {errors.description && (
+                    <p className="text-red-400 text-[12px]">
+                      {errors.description.message}
+                    </p>
+                  )}
                 </Field>
 
                 <Field>
@@ -154,11 +193,11 @@ export default function Product() {
                     //     required: "Description is required",
                     //   })}
                   />
-                  {/* {errors.description && (
-                  <p className="text-red-400 text-[12px]">
-                    {errors.description.message}
-                  </p>
-                )} */}
+                  {errors.description && (
+                    <p className="text-red-400 text-[12px]">
+                      {errors.description.message}
+                    </p>
+                  )}
                 </Field>
                 <Field>
                   <Label htmlFor="picture">Picture</Label>
@@ -171,27 +210,27 @@ export default function Product() {
               <Controller
                 name="category"
                 control={control}
-                rules={{ required: "Category is required" }}
+                rules={{ required: "Subcategory is required" }}
                 render={({ field }) => (
                   <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select Subcategory" />
                     </SelectTrigger>
                     <SelectContent>
-                      {/* {categoriesData.map((data) => (
+                      {subcategoryList.map((data) => (
                         <SelectItem key={data._id} value={data._id}>
                           {data.name}
                         </SelectItem>
-                      ))} */}
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
               />
-              {/* {errors.category && (
+              {errors.category && (
                 <p className="text-red-400 text-[12px] mt-1">
                   {errors.category.message}
                 </p>
-              )} */}
+              )}
             </FieldGroup>
             <Button className="w-[200px] cursor-pointer bg-[#327594] duration-300">
               Create
