@@ -1,4 +1,4 @@
-import { Toaster } from "sonner";
+import { toast, Toaster } from "sonner";
 import {
   Field,
   FieldContent,
@@ -35,8 +35,62 @@ export default function Product() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+
+      const formattedData = {
+        ...data,
+        price: Number(data.price) || 0,
+        stock: Number(data.stock) || 0,
+        rating: Number(data.rating) || 0,
+        discount: Number(data.discount) || 0,
+        sold: Number(data.sold) || 0,
+      };
+
+      const { image, ...fields } = formattedData;
+
+      Object.entries(fields).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      if (image && image[0]) {
+        formData.append("image", image[0]);
+      }
+
+      await axios.post(
+        "http://localhost:3000/api/v1/product/createproduct",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      toast("Product created!", {
+        description: "Successfully saved to database",
+        style: {
+          background: "#327594",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
+
+      reset();
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to create Product";
+      toast(errorMessage, {
+        description: "Check your input or try again",
+        style: {
+          background: "#f62d47",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
+      console.log(error);
+    }
   };
 
   // SubcategoryData fatching from database ======================================
@@ -124,7 +178,7 @@ export default function Product() {
                   />
                   {errors.name && (
                     <p className="text-red-400 text-[12px]">
-                      {errors.price``.message}
+                      {errors.price.message}
                     </p>
                   )}
                 </Field>
@@ -137,26 +191,19 @@ export default function Product() {
                     autoComplete="off"
                     placeholder="Stock"
                     className="font-poppins "
-                    {...register("stock", {
-                      required: "Description is required",
-                    })}
+                    {...register("stock")}
                   />
-                  {errors.description && (
-                    <p className="text-red-400 text-[12px]">
-                      {errors.description.message}
-                    </p>
-                  )}
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="rating" className="font-poppins">
                     Rating
                   </FieldLabel>
-                  <Input id="rating" autoComplete="off" placeholder="Rating" />
-                  {errors.name && (
-                    <p className="text-red-400 text-[12px]">
-                      {errors.name.message}
-                    </p>
-                  )}
+                  <Input
+                    id="rating"
+                    autoComplete="off"
+                    placeholder="Rating"
+                    {...register("rating")}
+                  />
                 </Field>
               </div>
               <div className="flex gap-x-10">
@@ -169,15 +216,8 @@ export default function Product() {
                     autoComplete="off"
                     placeholder="Discount"
                     className="font-poppins "
-                    //   {...register("description", {
-                    //     required: "Description is required",
-                    //   })}
+                    {...register("discount")}
                   />
-                  {errors.description && (
-                    <p className="text-red-400 text-[12px]">
-                      {errors.description.message}
-                    </p>
-                  )}
                 </Field>
 
                 <Field>
@@ -189,27 +229,26 @@ export default function Product() {
                     autoComplete="off"
                     placeholder="Sold"
                     className="font-poppins "
-                    //   {...register("description", {
-                    //     required: "Description is required",
-                    //   })}
+                    {...register("sold")}
                   />
-                  {errors.description && (
-                    <p className="text-red-400 text-[12px]">
-                      {errors.description.message}
-                    </p>
-                  )}
                 </Field>
                 <Field>
                   <Label htmlFor="picture">Picture</Label>
-                  <Input className="mt-1" id="picture" type="file" />
+                  <Input
+                    className="mt-1"
+                    id="picture"
+                    type="file"
+                    {...register("image", { required: true })}
+                  />
                 </Field>
               </div>
               <h1 className="font-poppins text-[14px] font-medium">
                 Select Subcategory
               </h1>
               <Controller
-                name="category"
+                name="subCategory"
                 control={control}
+                defaultValue=""
                 rules={{ required: "Subcategory is required" }}
                 render={({ field }) => (
                   <Select onValueChange={field.onChange} value={field.value}>
@@ -226,9 +265,9 @@ export default function Product() {
                   </Select>
                 )}
               />
-              {errors.category && (
+              {errors.subCategory && (
                 <p className="text-red-400 text-[12px] mt-1">
-                  {errors.category.message}
+                  {errors.subCategory.message}
                 </p>
               )}
             </FieldGroup>
