@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Controller } from "react-hook-form";
@@ -26,7 +27,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useEffect, useState } from "react";
 export default function Product() {
-  // Product create Section
+  // Product create Section ================================
   const {
     register,
     handleSubmit,
@@ -34,9 +35,10 @@ export default function Product() {
     control,
     formState: { errors },
   } = useForm();
-
+  const [spiner, setSpiner] = useState(false);
   const onSubmit = async (data) => {
     try {
+      setSpiner(true);
       const formData = new FormData();
 
       const formattedData = {
@@ -89,7 +91,9 @@ export default function Product() {
           padding: "12px 16px",
         },
       });
-      console.log(error);
+      console.log(error.message);
+    } finally {
+      setSpiner(false);
     }
   };
 
@@ -238,8 +242,13 @@ export default function Product() {
                     className="mt-1"
                     id="picture"
                     type="file"
-                    {...register("image", { required: true })}
+                    {...register("image", { required: "Need to seclect a Picture" })}
                   />
+                  {errors.name && (
+                    <p className="text-red-400 text-[12px]">
+                      {errors.image.message}
+                    </p>
+                  )}
                 </Field>
               </div>
               <h1 className="font-poppins text-[14px] font-medium">
@@ -271,9 +280,16 @@ export default function Product() {
                 </p>
               )}
             </FieldGroup>
-            <Button className="w-[200px] cursor-pointer bg-[#327594] duration-300">
-              Create
-            </Button>
+            {spiner ? (
+              <Button  className="w-[200px] cursor-pointer bg-[#327594] duration-300">
+                <Spinner />
+                Processing
+              </Button>
+            ) : (
+              <Button className="w-[200px] cursor-pointer bg-[#327594] duration-300">
+                Create
+              </Button>
+            )}
           </FieldSet>
         </form>
       </div>
