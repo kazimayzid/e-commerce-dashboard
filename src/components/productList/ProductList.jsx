@@ -35,6 +35,37 @@ export default function ProductList() {
   useEffect(() => {
     productData();
   }, []);
+
+  //  product delete section ==============================
+
+  const deleteHandler = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:3000/api/v1/product/deleteproduct/${id}`
+      );
+      toast("Product deleted!", {
+        description: "Successfully removed from database",
+        style: {
+          background: "#f62d47",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
+      productData();
+    } catch (error) {
+      toast("Failed to delete!", {
+        description: "Something went wrong while deleting.",
+        style: {
+          background: "#ff9800",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 16px",
+        },
+      });
+      console.log(error.messege);
+    }
+  };
   return (
     <>
       <Toaster position="top-center" richColors />
@@ -63,33 +94,43 @@ export default function ProductList() {
                     src={item.image}
                     alt={item.title}
                   />
-                  <div className="absolute top-[12px] left-[12px] font-poppins font-normal text-[12px] leading-[18px] text-white py-[4px] px-[12px] bg-secondary rounded-[4px]">
+                  <div className="absolute top-[12px] left-[12px] font-poppins font-normal text-[12px] leading-[18px] text-black py-[4px] px-[12px] bg-transparent rounded-[4px]">
                     -
                     {Math.round(
-                      ((item.mainprice - item.offerprice) / item.mainprice) *
-                        100
+                      ((item.price - item.discount) / item.price) * 100
                     )}
                     %
                   </div>
-                  <div className="w-[34px] h-[34px] rounded-full bg-white absolute right-[12px] top-[12px] flex items-center justify-center hover:bg-secondary hover:text-white duration-300">
-                    <Heart />
+                  <div className=" absolute right-[12px] top-[12px]">
+                    <FilePenLine
+                      // onClick={() => updateHandler(item)}
+                      size={30}
+                      className="text-green-500 cursor-pointer border-[.5px] rounded-[6px] p-1 hover:bg-green-500 hover:text-white duration-300"
+                    />
                   </div>
-                  <div className="w-[34px] h-[34px] rounded-full bg-white absolute right-[12px] top-[54px] flex items-center justify-center hover:bg-secondary hover:text-white duration-300">
-                    <Eye />
+                  <div className=" absolute right-[12px] top-[54px]">
+                    <Trash2
+                      onClick={() => deleteHandler(item._id)}
+                      size={30}
+                      className="text-red-500 cursor-pointer border-[.5px] rounded-[6px] p-1 hover:bg-red-500 hover:text-white duration-300"
+                    />
                   </div>
-                  <button
+                  {/* <button
                     className="absolute bottom-0 w-full py-2 bg-secondary hover:bg-primary text-white 
                      transform translate-y-full opacity-0 
                      group-hover:translate-y-0 group-hover:opacity-100 
                      transition-all duration-300 cursor-pointer"
                   >
                     Add To Cart
-                  </button>
+                  </button> */}
                 </div>
               </div>
               <div className="mt-[16px]">
                 <h1 className="font-poppins font-medium text-[16px] leading-[24px] text-black">
                   {item.name}
+                </h1>
+                <h1 className="font-poppins font-normal text-[12px] leading-[12px] text-black">
+                  {item.description}
                 </h1>
                 <div className="mt-2 flex gap-x-3">
                   <span className="font-poppins font-medium text-[16px] leading-[24px] text-secondary">
@@ -97,6 +138,9 @@ export default function ProductList() {
                   </span>
                   <span className="font-poppins font-medium text-[16px] leading-[24px] text-[rgba(0,0,0,0.5)] line-through">
                     ${item.price}
+                  </span>
+                  <span className="font-poppins font-medium text-[16px] leading-[24px] text-[rgba(0,0,0,0.5)] ">
+                    Stock: {item.stock}
                   </span>
                 </div>
                 <div className="mt-2 flex gap-x-2">
